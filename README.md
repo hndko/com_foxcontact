@@ -4,6 +4,7 @@ Exploiter Joomla Com_foxcontact From IndoXploit
 # How To Use : 
 1) apt-get install php php-cli php-curl php-dev -y
 2) apt-get install curl libcurl3 libcurl3-dev -y
+3) git clone https://github.com/kyuoko/com_foxcontact
 
 # Usage :
 php com_foxcontact.php list-target.txt
