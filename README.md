@@ -46,20 +46,20 @@ git clone https://github.com/yourusername/fox-automator.git
 cd fox-automator
 ```
 
-### 2. Prepare Targets
+### 2. Auto-Dorking (Optional)
 
-Create a `targets.txt` file with your list of URLs:
+Use the built-in dorker to find targets automatically:
 
-```text
-http://vulnerable-site.com
-https://joomla-target.net/
-http://subdomain.target.org
+```bash
+php fox_dorker.php
 ```
+
+_This will scrape Google and append results to `targets.txt`._
 
 ### 3. Run the Automator
 
 ```bash
-php fox_automator.php [list_file] [threads]
+php fox_automator.php targets.txt [threads]
 ```
 
 #### Examples
