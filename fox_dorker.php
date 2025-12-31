@@ -1,4 +1,5 @@
 <?php
+
 /**
  * FoxContact Auto Dorker
  * Scrapes Google for vulnerable targets and saves them to targets.txt
@@ -8,7 +9,21 @@ error_reporting(0);
 set_time_limit(0);
 
 // Configuration
-$dork = 'inurl:com_foxcontact';
+$dork = '';
+if (isset($argv[1])) {
+    // allow running like: php fox_dorker.php "inurl:..."
+    $dork = $argv[1];
+} else {
+    // Ask for input
+    echo "Enter Dork (e.g., inurl:com_foxcontact): ";
+    $handle = fopen("php://stdin", "r");
+    $dork = trim(fgets($handle));
+    fclose($handle);
+}
+
+if (empty($dork)) {
+    die("Error: No dork provided.\n");
+}
 $outputFile = 'targets.txt';
 $pagesToDork = 5; // Number of pages to scrape (Caution: too high = captcha)
 
@@ -65,13 +80,13 @@ for ($i = 0; $i < $pagesToDork; $i++) {
     // This is a naive regex but works for basic Google DOM
 
     // Google's structure changes often, but typically links are in <a href="/url?q=..."
-    preg_match_all('#/url\?q=(http[^&]+)&#' , $result, $matches);
+    preg_match_all('#/url\?q=(http[^&]+)&#', $result, $matches);
 
     if (empty($matches[1])) {
         // Try alternate parsing for newer Google layouts
-        preg_match_all('#<a href="(https?://[^"]+)"#' , $result, $rawLinks);
+        preg_match_all('#<a href="(https?://[^"]+)"#', $result, $rawLinks);
         if (!empty($rawLinks[1])) {
-            foreach($rawLinks[1] as $link) {
+            foreach ($rawLinks[1] as $link) {
                 if (strpos($link, 'google') === false && strpos($link, 'com_foxcontact') !== false) {
                     saveTarget($link, $outputFile);
                     $foundCount++;
@@ -82,8 +97,8 @@ for ($i = 0; $i < $pagesToDork; $i++) {
         foreach ($matches[1] as $link) {
             $decoded = urldecode($link);
             if (strpos($decoded, 'com_foxcontact') !== false) {
-                 saveTarget($decoded, $outputFile);
-                 $foundCount++;
+                saveTarget($decoded, $outputFile);
+                $foundCount++;
             }
         }
     }
@@ -94,7 +109,8 @@ print "[+] Dorking Complete.\n";
 print "[+] Total New Targets Found: $foundCount\n";
 
 
-function saveTarget($url, $file) {
+function saveTarget($url, $file)
+{
     // Basic deduplication
     $current = file_exists($file) ? file_get_contents($file) : '';
     if (strpos($current, $url) === false) {

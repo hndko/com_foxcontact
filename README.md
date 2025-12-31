@@ -48,10 +48,16 @@ cd fox-automator
 
 ### 2. Auto-Dorking (Optional)
 
-Use the built-in dorker to find targets automatically:
+Use the built-in dorker to find targets automatically. You will be prompted to enter your dork query.
 
 ```bash
 php fox_dorker.php
+```
+
+_Or pass the dork as an argument:_
+
+```bash
+php fox_dorker.php "inurl:com_foxcontact"
 ```
 
 _This will scrape Google and append results to `targets.txt`._
